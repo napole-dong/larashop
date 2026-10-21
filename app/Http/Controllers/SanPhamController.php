@@ -15,11 +15,20 @@ class SanPhamController extends Controller
 	}
     public function getThem()
 	{
-		return view('sanpham.them');
+		$loaisanpham = LoaiSanPham::all();
+		$hangsanxuat = HangSanXuat::all();
+		return view('sanpham.them', compact('loaisanpham', 'hangsanxuat'));
 	}
+    public function getSua($id)
+	{
+		$sanpham = SanPham::find($id);
+		$loaisanpham = LoaiSanPham::all();
+		$hangsanxuat = HangSanXuat::all();
+		return view('sanpham.sua', compact('sanpham', 'loaisanpham', 'hangsanxuat'));
+	}
+
     public function postThem(Request $request)
     {
-        // Kiểm tra
         $request->validate([
             'loaisanpham_id' => ['required'],
             'hangsanxuat_id' => ['required'],

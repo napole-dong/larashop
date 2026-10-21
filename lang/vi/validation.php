@@ -191,5 +191,14 @@ return [
 	| of "email". This simply helps us make our message more expressive.
 	|
 	*/
-	'attributes' => [],
+	'attributes' => [
+		'tenloai'        => 'Tên loại sản phẩm',
+		'tensanpham'     => 'Tên sản phẩm',
+		'loaisanpham_id' => 'Loại sản phẩm',
+		'hangsanxuat_id' => 'Hãng sản xuất',
+		'soluong'        => 'Số lượng',
+		'dongia'         => 'Đơn giá',
+		'hinhanh'        => 'Hình ảnh',
+		'motasanpham'    => 'Mô tả sản phẩm',
+	],
 ];

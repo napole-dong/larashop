@@ -9,7 +9,7 @@
 				<div class="mb-3">
 					<label class="form-label" for="tenloai">Tên loại</label>
 					<input type="text" class="form-control @error('tenloai') is-invalid @enderror" id="tenloai"
-						name="tenloai" value="{{ $loaisanpham->tenloai }}" required />
+						name="tenloai" value="{{ old('tenloai', $loaisanpham->tenloai) }}" required />
 					@error('tenloai')
 						<div class="invalid-feedback"><strong>{{ $message }}</strong></div>
 					@enderror

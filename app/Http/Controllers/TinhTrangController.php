@@ -10,7 +10,6 @@ class TinhTrangController extends Controller
     public function getDanhSach()
     {
         $tinhtrang = TinhTrang::all();
-
         return view('tinhtrang.danhsach', compact('tinhtrang'));
     }
 
@@ -22,7 +21,7 @@ class TinhTrangController extends Controller
     public function postThem(Request $request)
     {
         $request->validate([
-            'tinhtrang' => 'required|string|max:255',
+            'tinhtrang' => ['required', 'string', 'max:255', 'unique:tinhtrang,tinhtrang'],
         ]);
 
         $orm = new TinhTrang();
@@ -35,14 +34,13 @@ class TinhTrangController extends Controller
     public function getSua($id)
     {
         $tinhtrang = TinhTrang::findOrFail($id);
-
         return view('tinhtrang.sua', compact('tinhtrang'));
     }
 
     public function postSua(Request $request, $id)
     {
         $request->validate([
-            'tinhtrang' => 'required|string|max:255',
+            'tinhtrang' => ['required', 'string', 'max:255', 'unique:tinhtrang,tinhtrang,' . $id],
         ]);
 
         $orm = TinhTrang::findOrFail($id);
