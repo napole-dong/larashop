@@ -6,6 +6,7 @@ use App\Models\LoaiSanPham;
 use App\Models\HangSanXuat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 class LoaiSanPhamController extends Controller
 {
     public function getDanhSach()
@@ -56,7 +57,16 @@ class LoaiSanPhamController extends Controller
 	public function getXoa($id)
 	{
 		$orm = LoaiSanPham::find($id);
-		$orm->delete();
+		if ($orm) {
+			foreach ($orm->SanPham as $sp) {
+				$sp->DonHang_ChiTiet()->delete();
+				if ($sp->hinhanh) {
+					Storage::delete($sp->hinhanh);
+				}
+				$sp->delete();
+			}
+			$orm->delete();
+		}
 		
 		return redirect()->route('loaisanpham');
 	}

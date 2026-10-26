@@ -71,6 +71,7 @@ class DonHangController extends Controller
 	public function getXoa($id)
 	{
 		$orm = DonHang::findOrFail($id);
+		$orm->DonHang_ChiTiet()->delete();
 		$orm->delete();
 
 		return redirect()->route('donhang');

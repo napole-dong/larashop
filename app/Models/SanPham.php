@@ -7,9 +7,21 @@ use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Table('sanpham')]
 class SanPham extends Model
 {
+	protected $table = 'sanpham';
+
+	protected $fillable = [
+		'loaisanpham_id',
+		'hangsanxuat_id',
+		'tensanpham',
+		'tensanpham_slug',
+		'soluong',
+		'dongia',
+		'hinhanh',
+		'motasanpham',
+	];
+
 	public function LoaiSanPham(): BelongsTo
 	{
 		return $this->belongsTo(LoaiSanPham::class, 'loaisanpham_id', 'id');

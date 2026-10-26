@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\HangSanXuat;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use App\Imports\HangSanXuatImport;
+use App\Exports\HangSanXuatExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class HangSanXuatController extends Controller
 {
@@ -81,12 +84,41 @@ class HangSanXuatController extends Controller
 	public function getXoa($id)
 	{
 		$orm = HangSanXuat::find($id);
-		$hinhanh = $orm->hinhanh;
-		if ($hinhanh) {
-			Storage::delete($hinhanh);
+		if ($orm) {
+			foreach ($orm->SanPham as $sp) {
+				$sp->DonHang_ChiTiet()->delete();
+				if ($sp->hinhanh) {
+					Storage::delete($sp->hinhanh);
+				}
+				$sp->delete();
+			}
+			$hinhanh = $orm->hinhanh;
+			if ($hinhanh) {
+				Storage::delete($hinhanh);
+			}
+			$orm->delete();
 		}
-		$orm->delete();
 
 		return redirect()->route('hangsanxuat');
+	}
+
+	// Nhập từ Excel
+	public function postNhap(Request $request)
+	{
+		$request->validate([
+			'file_excel' => ['required', 'file', 'mimes:xlsx,xls', 'max:2048'],
+		]);
+
+		$import = new HangSanXuatImport();
+		Excel::import($import, $request->file('file_excel'));
+
+		return redirect()->route('hangsanxuat');
+	}
+
+	// Xuất ra Excel
+	public function getXuat()
+	{
+		$filename = 'hang-san-xuat.xlsx';
+		return Excel::download(new HangSanXuatExport(), $filename);
 	}
 }

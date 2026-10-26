@@ -6,6 +6,9 @@ use App\Models\HangSanXuat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use App\Imports\SanPhamImport;
+use App\Exports\SanPhamExport;
+use Maatwebsite\Excel\Facades\Excel;
 class SanPhamController extends Controller
 {
     public function getDanhSach()
@@ -106,13 +109,33 @@ class SanPhamController extends Controller
     public function getXoa($id)
     {
         $orm = SanPham::find($id);
-        // Lấy đường dẫn ảnh trước khi xóa đối tượng 
-        $hinhanh = $orm->hinhanh;
-        $orm->delete();
-        // Xóa tập tin khi xóa dữ liệu
-        if ($hinhanh)
-            Storage::delete($hinhanh);
-        // Sau khi xóa thành công thì tự động chuyển về trang danh sách
+        if ($orm) {
+            $orm->DonHang_ChiTiet()->delete();
+            $hinhanh = $orm->hinhanh;
+            $orm->delete();
+            if ($hinhanh)
+                Storage::delete($hinhanh);
+        }
         return redirect()->route('sanpham');
+    }
+
+    // Nhập từ Excel
+    public function postNhap(Request $request)
+    {
+        $request->validate([
+            'file_excel' => ['required', 'file', 'mimes:xlsx,xls', 'max:2048'],
+        ]);
+
+        $import = new SanPhamImport();
+        Excel::import($import, $request->file('file_excel'));
+
+        return redirect()->route('sanpham');
+    }
+
+    // Xuất ra Excel
+    public function getXuat()
+    {
+        $filename = 'san-pham.xlsx';
+        return Excel::download(new SanPhamExport(), $filename);
     }
 }
