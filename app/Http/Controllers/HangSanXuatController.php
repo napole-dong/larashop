@@ -12,15 +12,20 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class HangSanXuatController extends Controller
 {
+	public function __construct()
+	{
+		$this->middleware('auth');
+	}
+
 	public function getDanhSach()
 	{
-		$hangsanxuat = HangSanXuat::all();
-		return view('hangsanxuat.danhsach', compact('hangsanxuat'));
+		$hangsanxuat = HangSanXuat::paginate(25);
+		return view('admin.hangsanxuat.danhsach', compact('hangsanxuat'));
 	}
 
 	public function getThem()
 	{
-		return view('hangsanxuat.them');
+		return view('admin.hangsanxuat.them');
 	}
 
 	public function postThem(Request $request)
@@ -44,13 +49,13 @@ class HangSanXuatController extends Controller
 		$orm->hinhanh = $path ?? null;
 		$orm->save();
 
-		return redirect()->route('hangsanxuat');
+		return redirect()->route('admin.hangsanxuat');
 	}
 
 	public function getSua($id)
 	{
 		$hangsanxuat = HangSanXuat::find($id);
-		return view('hangsanxuat.sua', compact('hangsanxuat'));
+		return view('admin.hangsanxuat.sua', compact('hangsanxuat'));
 	}
 
 	public function postSua(Request $request, $id)
@@ -78,7 +83,7 @@ class HangSanXuatController extends Controller
 		$orm->hinhanh = $path ?? $orm->hinhanh ?? null;
 		$orm->save();
 
-		return redirect()->route('hangsanxuat');
+		return redirect()->route('admin.hangsanxuat');
 	}
 
 	public function getXoa($id)
@@ -99,7 +104,7 @@ class HangSanXuatController extends Controller
 			$orm->delete();
 		}
 
-		return redirect()->route('hangsanxuat');
+		return redirect()->route('admin.hangsanxuat');
 	}
 
 	// Nhập từ Excel
@@ -112,7 +117,7 @@ class HangSanXuatController extends Controller
 		$import = new HangSanXuatImport();
 		Excel::import($import, $request->file('file_excel'));
 
-		return redirect()->route('hangsanxuat');
+		return redirect()->route('admin.hangsanxuat');
 	}
 
 	// Xuất ra Excel

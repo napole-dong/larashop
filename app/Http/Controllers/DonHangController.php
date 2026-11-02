@@ -9,17 +9,22 @@ use App\Models\TinhTrang;
 
 class DonHangController extends Controller
 {
+	public function __construct()
+	{
+		$this->middleware('auth');
+	}
+
 	public function getDanhSach()
 	{
-		$donhang = DonHang::with(['User', 'TinhTrang'])->latest()->get();
-		return view('donhang.danhsach', compact('donhang'));
+		$donhang = DonHang::with(['User', 'TinhTrang'])->latest()->paginate(25);
+		return view('admin.donhang.danhsach', compact('donhang'));
 	}
 
 	public function getThem()
 	{
 		$user = User::all();
 		$tinhtrang = TinhTrang::all();
-		return view('donhang.them', compact('user', 'tinhtrang'));
+		return view('admin.donhang.them', compact('user', 'tinhtrang'));
 	}
 
 	public function postThem(Request $request)
@@ -38,7 +43,7 @@ class DonHangController extends Controller
 		$orm->diachigiaohang = $request->diachigiaohang;
 		$orm->save();
 
-		return redirect()->route('donhang');
+		return redirect()->route('admin.donhang');
 	}
 
 	public function getSua($id)
@@ -46,7 +51,7 @@ class DonHangController extends Controller
 		$donhang = DonHang::findOrFail($id);
 		$user = User::all();
 		$tinhtrang = TinhTrang::all();
-		return view('donhang.sua', compact('donhang', 'user', 'tinhtrang'));
+		return view('admin.donhang.sua', compact('donhang', 'user', 'tinhtrang'));
 	}
 
 	public function postSua(Request $request, $id)
@@ -65,7 +70,7 @@ class DonHangController extends Controller
 		$orm->diachigiaohang = $request->diachigiaohang;
 		$orm->save();
 
-		return redirect()->route('donhang');
+		return redirect()->route('admin.donhang');
 	}
 
 	public function getXoa($id)
@@ -74,6 +79,6 @@ class DonHangController extends Controller
 		$orm->DonHang_ChiTiet()->delete();
 		$orm->delete();
 
-		return redirect()->route('donhang');
+		return redirect()->route('admin.donhang');
 	}
 }

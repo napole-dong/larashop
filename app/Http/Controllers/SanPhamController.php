@@ -11,23 +11,28 @@ use App\Exports\SanPhamExport;
 use Maatwebsite\Excel\Facades\Excel;
 class SanPhamController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function getDanhSach()
 	{
-		$sanpham = SanPham::all();
-		return view('sanpham.danhsach', compact('sanpham'));
+		$sanpham = SanPham::paginate(25);
+		return view('admin.sanpham.danhsach', compact('sanpham'));
 	}
     public function getThem()
 	{
 		$loaisanpham = LoaiSanPham::all();
 		$hangsanxuat = HangSanXuat::all();
-		return view('sanpham.them', compact('loaisanpham', 'hangsanxuat'));
+		return view('admin.sanpham.them', compact('loaisanpham', 'hangsanxuat'));
 	}
     public function getSua($id)
 	{
 		$sanpham = SanPham::find($id);
 		$loaisanpham = LoaiSanPham::all();
 		$hangsanxuat = HangSanXuat::all();
-		return view('sanpham.sua', compact('sanpham', 'loaisanpham', 'hangsanxuat'));
+		return view('admin.sanpham.sua', compact('sanpham', 'loaisanpham', 'hangsanxuat'));
 	}
 
     public function postThem(Request $request)
@@ -64,7 +69,7 @@ class SanPhamController extends Controller
         $orm->motasanpham = $request->motasanpham;
         $orm->save();
         // Sau khi thêm thành công thì tự động chuyển về trang danh sách
-        return redirect()->route('sanpham');
+        return redirect()->route('admin.sanpham');
     }
     public function postSua(Request $request, $id)
     {
@@ -104,7 +109,7 @@ class SanPhamController extends Controller
         $orm->motasanpham = $request->motasanpham;
         $orm->save();
         // Sau khi sửa thành công thì tự động chuyển về trang danh sách
-        return redirect()->route('sanpham');
+        return redirect()->route('admin.sanpham');
     }
     public function getXoa($id)
     {
@@ -116,7 +121,7 @@ class SanPhamController extends Controller
             if ($hinhanh)
                 Storage::delete($hinhanh);
         }
-        return redirect()->route('sanpham');
+        return redirect()->route('admin.sanpham');
     }
 
     // Nhập từ Excel
@@ -129,7 +134,7 @@ class SanPhamController extends Controller
         $import = new SanPhamImport();
         Excel::import($import, $request->file('file_excel'));
 
-        return redirect()->route('sanpham');
+        return redirect()->route('admin.sanpham');
     }
 
     // Xuất ra Excel

@@ -8,15 +8,20 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function getDanhSach()
     {
-        $nguoidung = User::all();
-        return view('nguoidung.danhsach', compact('nguoidung'));
+        $nguoidung = User::paginate(25);
+        return view('admin.nguoidung.danhsach', compact('nguoidung'));
     }
 
     public function getThem()
     {
-        return view('nguoidung.them');
+        return view('admin.nguoidung.them');
     }
 
     public function postThem(Request $request)
@@ -37,13 +42,13 @@ class UserController extends Controller
         $orm->password = Hash::make($request->password);
         $orm->save();
 
-        return redirect()->route('nguoidung');
+        return redirect()->route('admin.nguoidung');
     }
 
     public function getSua($id)
     {
         $nguoidung = User::findOrFail($id);
-        return view('nguoidung.sua', compact('nguoidung'));
+        return view('admin.nguoidung.sua', compact('nguoidung'));
     }
 
     public function postSua(Request $request, $id)
@@ -66,7 +71,7 @@ class UserController extends Controller
         }
         $orm->save();
 
-        return redirect()->route('nguoidung');
+        return redirect()->route('admin.nguoidung');
     }
 
     public function getXoa($id)
@@ -74,6 +79,6 @@ class UserController extends Controller
         $orm = User::findOrFail($id);
         $orm->delete();
 
-        return redirect()->route('nguoidung');
+        return redirect()->route('admin.nguoidung');
     }
 }

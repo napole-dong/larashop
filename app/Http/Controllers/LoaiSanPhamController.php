@@ -9,15 +9,20 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 class LoaiSanPhamController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function getDanhSach()
 	{
-		$loaisanpham = LoaiSanPham::all();
-		return view('loaisanpham.danhsach', compact('loaisanpham'));
+		$loaisanpham = LoaiSanPham::paginate(25);
+		return view('admin.loaisanpham.danhsach', compact('loaisanpham'));
 	}
 	
 	public function getThem()
 	{
-		return view('loaisanpham.them');
+		return view('admin.loaisanpham.them');
 	}
 	
 	public function postThem(Request $request)
@@ -31,13 +36,13 @@ class LoaiSanPhamController extends Controller
 		$orm->tenloai_slug = Str::slug($request->tenloai, '-');
 		$orm->save();
 		
-		return redirect()->route('loaisanpham');
+		return redirect()->route('admin.loaisanpham');
 	}
 	
 	public function getSua($id)
 	{
 		$loaisanpham = LoaiSanPham::find($id);
-		return view('loaisanpham.sua', compact('loaisanpham'));
+		return view('admin.loaisanpham.sua', compact('loaisanpham'));
 	}
 	
 	public function postSua(Request $request, $id)
@@ -51,7 +56,7 @@ class LoaiSanPhamController extends Controller
 		$orm->tenloai_slug = Str::slug($request->tenloai, '-');
 		$orm->save();
 		
-		return redirect()->route('loaisanpham');
+		return redirect()->route('admin.loaisanpham');
 	}
 	
 	public function getXoa($id)
@@ -68,6 +73,6 @@ class LoaiSanPhamController extends Controller
 			$orm->delete();
 		}
 		
-		return redirect()->route('loaisanpham');
+		return redirect()->route('admin.loaisanpham');
 	}
 }
